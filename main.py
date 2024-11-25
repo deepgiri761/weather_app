@@ -5,6 +5,7 @@ from datetime import datetime
 import requests
 import os
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 
