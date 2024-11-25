@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        // Automatically submit the form when a selection changes
+        function submitForm() {
+            document.getElementById("locationForm").submit();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3 class="alert text-light text-center white-color">Weather App</h3>
+                <form id="locationForm" method="POST">
+                    {{ form.hidden_tag() }}
+
+                    <div class="mb-3">
+                        {{ form.country.label(class="form-label") }}
+                        {{ form.country(class="form-select", onchange="submitForm()") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.state.label(class="form-label") }}
+                        {{ form.state(class="form-select", onchange="submitForm()") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.city.label(class="form-label") }}
+                        {{ form.city(class="form-select", onchange="submitForm()") }}
+                    </div>
+
+                    <div class="d-flex justify-content-center align-items-center mt-4" id="weatherwidget">
+                    {% if data and date %}
+                       <div  class="card p-4 shadow-sm" id="divstyle">
+                          <div class="d-flex justify-content-between align-items-center">
+                             <h5 class="text-primary mb-1">{{ data["name"] }}, {{ data["sys"]["country"] }}</h5>
+                             <div>
+                             {% if change_value == "F" %}
+                                 <button class="single-letter-button" type="submit" name="unit" value="C">°C</button>
+                             {% else %}
+                                 <button class="single-letter-button" type="submit" name="unit" value="F">°F</button>
+                             {% endif %}
+                             </div>
+                           </div>
+                           <p class="text-muted mb-3">{{ date }}</p>
+                         {% if change_value == "F" %}
+                          <div class="d-flex align-items-center mb-3">
+                            <h1 class="me-3 text-warning" ><strong>{{ ((data["main"]["temp"] - 273.15)*9/5 + 32) | round(2) }}°F</strong></h1>
+                          </div>
+                          <div>
+                            <p class="mb-0"><strong>Feels Like: {{ ((data["main"]["feels_like"] - 273.15)*9/5 + 32) | round(2) }}°F</strong></p>
+                            <small class="text-muted">Max: {{ ((data["main"]["temp_max"] - 273.15)*9/5 + 32) | round(2) }}°F, Min: {{ ((data["main"]["temp_min"] - 273.15)*9/5 + 32) | round(2) }}°F</small>
+                          </div>
+                           {% else %}
+                              <div class="d-flex align-items-center mb-3">
+                                <h1 class="me-3 text-warning" ><strong>{{ (data["main"]["temp"] - 273.15) | round(2) }}°C</strong></h1>
+                              </div>
+                              <div>
+                                <p class="mb-0"><strong>Feels Like: {{ (data["main"]["feels_like"] - 273.15) | round(2) }}°C</strong></p>
+                                <small class="text-muted">Max: {{ (data["main"]["temp_max"] - 273.15) | round(2) }}°C, Min: {{ (data["main"]["temp_min"] - 273.15) | round(2) }}°C</small>
+                              </div>
+                           {% endif %}
+                        <div class="d-flex align-items-center mb-3">
+                            <p class="mb-0 me-2 text-capitalize"><strong>{{ data["weather"][0]["main"] }}</strong></p>
+                        </div>
+                            <p class="text-muted mb-0 text-capitalize">{{ data["weather"][0]["description"] }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
